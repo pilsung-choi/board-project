@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { title } from 'process';
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
 
 export interface Movie {
   id: number;
   title: string;
 }
 @Injectable()
-export class AppService {
+export class MovieService {
   // getHello(): string {
   //   return 'Hello World!!';
   // }
