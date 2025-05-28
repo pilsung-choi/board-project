@@ -4,6 +4,7 @@ import { MovieModule } from './movie/movie.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
+import { Movie } from './movie/entity/movie.entity';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import * as Joi from 'joi';
         username: configService.get('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [],
+        entities: [Movie],
         synchronize: true, // 개발할때만 true, 프로덕션은 false
       }),
       inject: [ConfigService],
