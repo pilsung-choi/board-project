@@ -5,12 +5,6 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  registerDecorator,
-  Validate,
-  ValidationArguments,
-  ValidationOptions,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
 } from 'class-validator';
 
 // @ValidatorConstraint()
@@ -49,7 +43,7 @@ export class UpdateMovieDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsNumber({}, { each: true })
-  gerneIds: number[];
+  genreIds: number[];
 
   @IsNotEmpty()
   @IsOptional()

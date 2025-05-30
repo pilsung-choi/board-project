@@ -22,5 +22,5 @@ export class CreateMovieDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsNumber({}, { each: true })
-  gerneIds: number[];
+  genreIds: number[];
 }
