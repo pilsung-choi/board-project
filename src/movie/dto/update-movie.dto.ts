@@ -45,6 +45,9 @@ export class UpdateMovieDto {
   @IsOptional()
   detail?: string;
 
+  @IsNotEmpty()
+  @IsOptional()
+  directorId?: number;
   // @Validate(PasswordValidator, {
   //   message: "다른 에러 메세지"
   // })
