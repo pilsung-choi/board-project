@@ -1,6 +1,10 @@
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
+  IsString,
   registerDecorator,
   Validate,
   ValidationArguments,
@@ -35,18 +39,21 @@ import {
 export class UpdateMovieDto {
   @IsNotEmpty()
   @IsOptional()
+  @IsString()
   title?: string;
-
-  @IsNotEmpty()
-  @IsOptional()
-  gerne?: string;
 
   @IsNotEmpty()
   @IsOptional()
   detail?: string;
 
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsNumber({}, { each: true })
+  gerneIds: number[];
+
   @IsNotEmpty()
   @IsOptional()
+  @IsNumber()
   directorId?: number;
   // @Validate(PasswordValidator, {
   //   message: "다른 에러 메세지"
