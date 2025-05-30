@@ -6,4 +6,7 @@ export class CreateMovieDto {
 
   @IsNotEmpty()
   gerne: string;
+
+  @IsNotEmpty()
+  detail: string;
 }
