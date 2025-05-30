@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
   ClassSerializerInterceptor,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -25,8 +26,8 @@ export class MovieController {
   }
 
   @Get(':id')
-  getMovie(@Param('id') id: string) {
-    return this.movieService.getMovieById(+id);
+  getMovie(@Param('id', ParseIntPipe) id: number) {
+    return this.movieService.getMovieById(id);
   }
 
   @Post()
