@@ -27,7 +27,7 @@ export class MovieController {
     @Request() req: any,
     @Query('title', MovieTitleValidationPipe) title?: string,
   ) {
-    console.log(req.user); // Access the user from the request object
+    //console.log(req.user); // Access the user from the request object
     return this.movieService.getManyMovies(title);
   }
 

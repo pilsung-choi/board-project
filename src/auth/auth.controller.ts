@@ -1,4 +1,4 @@
-import { Controller, Post, Headers } from '@nestjs/common';
+import { Controller, Post, Headers, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -22,9 +22,7 @@ export class AuthController {
   }
 
   @Post('token/access')
-  async rotateAccessToken(@Headers('Authorization') token: string) {
-    const payload = await this.authService.parseBearerToken(token, true);
-
-    return { accessToken: await this.authService.issueToken(payload, false) };
+  async rotateAccessToken(@Request() req) {
+    return { accessToken: await this.authService.issueToken(req.user, false) };
   }
 }
