@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { PostsModule } from './posts/posts.module';
 import { MovieModule } from './movie/movie.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,6 +15,12 @@ import { DirectorModule } from './director/director.module';
 import { Director } from './director/entity/director.entity';
 import { GenreModule } from './genre/genre.module';
 import { Genre } from './genre/entities/genre.entity';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
+import { envVariableKeys } from './common/const/env.const';
+import { env } from 'process';
+import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
 
 @Module({
   imports: [
@@ -23,17 +34,20 @@ import { Genre } from './genre/entities/genre.entity';
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
+        HASH_ROUNDS: Joi.number().required(),
+        ACCESS_TOKEN_SECRET: Joi.string().required(),
+        REFRESH_TOKEN_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        type: configService.get<string>('DB_TYPE') as 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        entities: [Movie, MovieDetail, Director, Genre],
+        type: configService.get<string>(envVariableKeys.dbType) as 'postgres',
+        host: configService.get<string>(envVariableKeys.dbHost),
+        port: configService.get<number>(envVariableKeys.dbPort),
+        username: configService.get(envVariableKeys.dbUserName),
+        password: configService.get<string>(envVariableKeys.dbPassword),
+        database: configService.get<string>(envVariableKeys.dbDatabase),
+        entities: [Movie, MovieDetail, Director, Genre, User],
         synchronize: true, // 개발할때만 true, 프로덕션은 false
       }),
       inject: [ConfigService],
@@ -42,6 +56,23 @@ import { Genre } from './genre/entities/genre.entity';
     MovieModule,
     DirectorModule,
     GenreModule,
+    AuthModule,
+    UserModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // 여기에 미들웨어 설정이 필요하다면 추가할 수 있습니다.
+    consumer
+      .apply(BearerTokenMiddleware)
+      .exclude(
+        { path: 'auth/login', method: RequestMethod.POST },
+        {
+          path: 'auth/register',
+          method: RequestMethod.POST,
+        },
+      )
+      // 로그인 라우트는 제외합니다.
+      .forRoutes('*'); // 모든 라우트에 BearerTokenMiddleware를 적용합니다.
+  }
+}
