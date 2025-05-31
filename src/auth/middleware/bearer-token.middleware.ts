@@ -33,11 +33,9 @@ export class BearerTokenMiddleware implements NestMiddleware {
     }
 
     const token = this.validateBearerToken(authHeader);
-    console.log(token);
 
     try {
       const decodedPayload = await this.jwtService.decode(token);
-      console.log(decodedPayload);
 
       if (
         decodedPayload.type !== 'refresh' &&
