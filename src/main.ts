@@ -8,6 +8,8 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
+      //nestjs에서 자동 타입변환을 활성화
+      transformOptions: { enableImplicitConversion: true },
     }),
   );
   await app.listen(process.env.PORT ?? 3000);

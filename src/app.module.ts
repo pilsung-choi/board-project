@@ -52,6 +52,7 @@ import { APP_GUARD } from '@nestjs/core';
         database: configService.get<string>(envVariableKeys.dbDatabase),
         entities: [Movie, MovieDetail, Director, Genre, User],
         synchronize: true, // 개발할때만 true, 프로덕션은 false
+        logging: ['query'],
       }),
       inject: [ConfigService],
     }),
