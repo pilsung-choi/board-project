@@ -23,8 +23,10 @@ import { env } from 'process';
 import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
 import { AuthGuard } from './auth/guard/auth.guard';
 import { RBACGuard } from './auth/guard/rbac.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ResponseTimeInterceptor } from './common/interceptor/response-time.interceptor';
+import { ForbiddenExceptionFilter } from './common/filter/forbidden.filter';
+import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter';
 
 @Module({
   imports: [
@@ -76,6 +78,14 @@ import { ResponseTimeInterceptor } from './common/interceptor/response-time.inte
     {
       provide: 'APP_INTERCEPTOR',
       useClass: ResponseTimeInterceptor,
+    },
+    {
+      provide: 'APP_FILTER',
+      useClass: ForbiddenExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: QueryFailedExceptionFilter,
     },
   ],
 })
