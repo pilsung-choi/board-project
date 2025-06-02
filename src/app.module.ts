@@ -24,6 +24,7 @@ import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware
 import { AuthGuard } from './auth/guard/auth.guard';
 import { RBACGuard } from './auth/guard/rbac.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { ResponseTimeInterceptor } from './common/interceptor/response-time.interceptor';
 
 @Module({
   imports: [
@@ -71,6 +72,10 @@ import { APP_GUARD } from '@nestjs/core';
     {
       provide: APP_GUARD,
       useClass: RBACGuard,
+    },
+    {
+      provide: 'APP_INTERCEPTOR',
+      useClass: ResponseTimeInterceptor,
     },
   ],
 })
