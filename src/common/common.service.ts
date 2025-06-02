@@ -22,9 +22,44 @@ export class CommonService {
     qb: SelectQueryBuilder<T>,
     dto: CursorPaginationDto,
   ) {
-    const { cursor, take, order } = dto;
+    let { cursor, take, order } = dto;
 
     if (cursor) {
+      const decodesCursor = Buffer.from(cursor, 'base64').toString('utf-8');
+      const cursorObj = JSON.parse(decodesCursor);
+
+      // cursorObj의 value와 order
+      /**
+       * {value:
+       *    {
+       *      likeCount:20,
+       *      id:35
+       * },
+       *  order:
+       *      ["likeCount_DESC", "id_DESC"]
+       * }
+       */
+
+      order = cursorObj.order;
+
+      const values = cursorObj.value;
+
+      // WHERE (column1 > value1)
+      // OR (column1 = value1 AND column2 > value2)
+      // OR (column1 = value1 AND column2 = value2 AND column3 > value3)
+      // 같은 쿼리다
+      // (column1, column2, column3) > (value1, value2, value3)
+      const columns = Object.keys(values);
+      const comparisonOperators = order.some((o) => o.endsWith('DESC'))
+        ? '<'
+        : '>';
+      const whereConditions = columns.map((c) => `${qb.alias}.${c}`).join(', ');
+      const whereParams = columns.map((c) => `:${c}`).join(', ');
+
+      qb.where(
+        `(${whereConditions}) ${comparisonOperators} (${whereParams})`,
+        values,
+      );
     }
 
     // [likeCount_DESC,id_DESC]

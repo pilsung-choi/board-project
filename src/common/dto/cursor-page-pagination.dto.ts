@@ -9,7 +9,7 @@ export class CursorPaginationDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  // [id_ASC, id_DESC]
+  // [id_ASC, likeCount_DESC]
   order: string[] = ['id_DESC'];
 
   @IsInt()
