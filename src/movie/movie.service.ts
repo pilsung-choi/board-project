@@ -9,6 +9,7 @@ import { Director } from 'src/director/entity/director.entity';
 import { Genre } from 'src/genre/entities/genre.entity';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { CommonService } from 'src/common/common.service';
+import { asyncWrapProviders } from 'async_hooks';
 
 @Injectable()
 export class MovieService {
@@ -36,8 +37,16 @@ export class MovieService {
       qb.where('movie.title LIKE :title', { title: `%${title}%` });
     }
 
-    this.commonService.applyCursorPaginationParamsToQb(qb, dto);
-    return await qb.getManyAndCount();
+    const { nextCursor } =
+      await this.commonService.applyCursorPaginationParamsToQb(qb, dto);
+
+    const [data, count] = await qb.getManyAndCount();
+
+    return {
+      data,
+      nextCursor,
+      count,
+    };
 
     // if (!title) {
     //   return [
