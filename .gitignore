@@ -60,3 +60,4 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # files
 public/movie/*.mp4
 public/temp/*.mp4
+assets/movie/*.mp4
