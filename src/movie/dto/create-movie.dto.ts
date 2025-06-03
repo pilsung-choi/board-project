@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -15,6 +15,9 @@ export class CreateMovieDto {
   @IsNotEmpty()
   @IsString()
   detail: string;
+
+  @IsString()
+  movieFileName: string;
 
   @IsNotEmpty()
   @IsNumber()
