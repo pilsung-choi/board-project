@@ -69,12 +69,7 @@ export class MovieController {
   postMovie(
     @Body() body: CreateMovieDto,
     @Request() req, //: any,
-    @UploadedFile(
-      new MovieFilePipe({
-        maxSize: 30,
-        mimeType: 'video/mp4',
-      }),
-    )
+    @UploadedFile()
     movie: Express.Multer.File,
   ) {
     console.log('Files:---------', movie);

@@ -19,16 +19,16 @@ import { v4 } from 'uuid';
     MulterModule.register({
       storage: diskStorage({
         destination: join(process.cwd(), 'public', 'movie'),
-        // filename: (req, file, callback) => {
-        //   const split = file.originalname.split('.');
-        //   let extension = 'mp4';
+        filename: (req, file, callback) => {
+          const split = file.originalname.split('.');
+          let extension = 'mp4';
 
-        //   if (split.length > 1) {
-        //     extension = split[split.length - 1];
-        //   }
+          if (split.length > 1) {
+            extension = split[split.length - 1];
+          }
 
-        //   callback(null, `${v4()}_${Date.now()}.${extension}`);
-        // },
+          callback(null, `${v4()}_${Date.now()}.${extension}`);
+        },
       }),
     }),
   ],
