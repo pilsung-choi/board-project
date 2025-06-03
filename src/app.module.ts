@@ -27,6 +27,8 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ResponseTimeInterceptor } from './common/interceptor/response-time.interceptor';
 import { ForbiddenExceptionFilter } from './common/filter/forbidden.filter';
 import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -58,6 +60,11 @@ import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter'
         //logging: ['query'],
       }),
       inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'), // 정적 파일을 제공할 경로
+      serveRoot: '/public/', // 정적 파일을 제공할 경로
+      // exclude: ['/api*'], // API 경로는 제외
     }),
     PostsModule,
     MovieModule,
