@@ -42,8 +42,8 @@ export class MovieController {
 
   @Get()
   @Public()
-  getMovies(@Query() dto: GetMoviesDto) {
-    return this.movieService.getManyMovies(dto);
+  getMovies(@Query() dto: GetMoviesDto, @UserId() userId?: number) {
+    return this.movieService.getManyMovies(dto, userId);
   }
 
   @Get(':id')
@@ -76,5 +76,47 @@ export class MovieController {
   @RBAC(Role.admin)
   deleteMovie(@Param('id', ParseIntPipe) id: string) {
     return this.movieService.deleteMovie(+id);
+  }
+
+  /**
+   * [Like] [DisLike]
+   *
+   * 아무것도 누르지 않은 상태
+   * Like & DisLike 모두 버튼 꺼져있음
+   *
+   * Like 버튼 누르면
+   * Like 버튼 켜짐
+   *
+   * Like 버튼 다시 누르면
+   * Like 버튼 꺼짐
+   *
+   * DisLike 버튼 누르면
+   * DisLike 버튼 켜짐
+   *
+   * DisLike 버튼 다시 누르면
+   * DisLike 버튼 꺼짐
+   *
+   * Like 버튼 누름
+   * Like 버튼 불 켜짐
+   *
+   * DisLike 버튼 누름
+   * Like 버튼 불 꺼지고 DisLike 버튼 불 켜짐
+   *
+   */
+
+  @Post(':id/like')
+  createMovieLike(
+    @Param('id', ParseIntPipe) movieId: number,
+    @UserId() userId: number,
+  ) {
+    return this.movieService.toggleMovieLike(movieId, userId, true);
+  }
+
+  @Post(':id/dislike')
+  createMovieDislike(
+    @Param('id', ParseIntPipe) movieId: number,
+    @UserId() userId: number,
+  ) {
+    return this.movieService.toggleMovieLike(movieId, userId, false);
   }
 }
