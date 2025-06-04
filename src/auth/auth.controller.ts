@@ -1,6 +1,7 @@
-import { Controller, Post, Headers, Request } from '@nestjs/common';
+import { Controller, Post, Headers, Request, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
+import { retryWhen } from 'rxjs';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +23,11 @@ export class AuthController {
   loginUser(@Headers('Authorization') token: string) {
     // Call the AuthService to login the user
     return this.authService.login(token);
+  }
+
+  @Post('token/block')
+  blockToken(@Body('token') token: string) {
+    return this.authService.tokenBlock(token);
   }
 
   @Post('token/access')

@@ -58,6 +58,6 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # docker
 
 # files
-public/movie/
-public/temp/
-assets/videos
+/public/movie
+/public/temp
+/assets

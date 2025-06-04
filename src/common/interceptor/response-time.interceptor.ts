@@ -21,6 +21,7 @@ export class ResponseTimeInterceptor implements NestInterceptor {
       tap(() => {
         const resTime = Date.now();
         const diff = resTime - reqTime;
+        console.log(`[${req.method}] ${req.url} - ${diff}ms`);
       }),
     );
   }
