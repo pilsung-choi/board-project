@@ -33,6 +33,7 @@ import { MovieUserLike } from './movie/entity/movie-user-like.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Throttle } from './common/decorator/throttle.decorator';
 import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
       ttl: 0,
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     PostsModule,
     MovieModule,
     DirectorModule,
