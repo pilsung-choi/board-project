@@ -6,9 +6,6 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
-import { create } from 'domain';
-import { mock } from 'node:test';
-import { IsEmail } from 'class-validator';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 const mockUserRepo = {

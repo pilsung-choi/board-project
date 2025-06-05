@@ -27,7 +27,7 @@ export class AuthService {
   ) {}
 
   async tokenBlock(token: string) {
-    const payload = await this.jwtService.decode(token);
+    const payload = this.jwtService.decode(token);
 
     const expiryDate = +new Date(payload['exp'] * 1000);
     const now = +Date.now();
@@ -121,7 +121,7 @@ export class AuthService {
   }
 
   async issueToken(user: { id: number; role: Role }, isRefreshToken: boolean) {
-    const refereshToken = this.configService.get<string>(
+    const refreshToken = this.configService.get<string>(
       envVariableKeys.refreshTokenSecret,
     );
     const accessToken = this.configService.get<string>(
@@ -135,7 +135,7 @@ export class AuthService {
         type: isRefreshToken ? 'refresh' : 'access',
       },
       {
-        secret: isRefreshToken ? refereshToken : accessToken,
+        secret: isRefreshToken ? refreshToken : accessToken,
         expiresIn: isRefreshToken ? '24h' : '1h',
       },
     );
@@ -161,7 +161,7 @@ export class AuthService {
     }
 
     return {
-      refereshToken: await this.issueToken(user, true),
+      refreshToken: await this.issueToken(user, true),
       accessToken: await this.issueToken(user, false),
     };
   }
