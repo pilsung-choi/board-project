@@ -2,15 +2,19 @@ import { Controller, Post, Headers, Request, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
 import { retryWhen } from 'rxjs';
+import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
+import { Authrization } from './decorator/authrization.decorator';
 
 @Controller('auth')
+@ApiBearerAuth()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('register')
+  @ApiBasicAuth()
   // authorization: basic $token
-  registerUser(@Headers('Authorization') token: string) {
+  registerUser(@Authrization() token: string) {
     // // Extract the token from the Authorization header
     // const token = authHeader.split(' ')[1];
 
@@ -20,7 +24,8 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  loginUser(@Headers('Authorization') token: string) {
+  @ApiBasicAuth()
+  loginUser(@Authrization() token: string) {
     // Call the AuthService to login the user
     return this.authService.login(token);
   }
