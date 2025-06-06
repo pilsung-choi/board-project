@@ -4,8 +4,6 @@ import { UpdateGenreDto } from './dto/update-genre.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Genre } from './entities/genre.entity';
 import { Repository } from 'typeorm';
-import { PassThrough } from 'stream';
-import { asyncWrapProviders } from 'async_hooks';
 
 @Injectable()
 export class GenreService {
