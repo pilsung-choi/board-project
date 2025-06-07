@@ -11,6 +11,7 @@ import { MovieUserLike } from './entity/movie-user-like.entity';
 import { CommonService } from 'src/common/common.service';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { GetMoviesDto } from './dto/get-movies.dto';
 
 describe('MovieService', () => {
   let movieService: MovieService;
@@ -80,6 +81,128 @@ describe('MovieService', () => {
 
   describe('getLikedMovies', () => {
     let getMoviesMock: jest.SpyInstance;
-    it('should return a list of movies without user likes', async () => {});
+    let getLikedMoviesMock: jest.SpyInstance;
+    let applyCursorPaginationParamsToQbMock: jest.SpyInstance;
+    let qb: any;
+
+    beforeEach(() => {
+      getMoviesMock = jest.spyOn(movieService, 'getMovies');
+      getLikedMoviesMock = jest.spyOn(movieService, 'getLikedMovies');
+      applyCursorPaginationParamsToQbMock = jest.spyOn(
+        commonService,
+        'applyCursorPaginationParamsToQb',
+      );
+      qb = {
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getManyAndCount: jest.fn(),
+      };
+    });
+
+    it('should return a list of movies without user likes', async () => {
+      // userlike 없이 title 없을 때, 처음 불려서 nextCursor 없음
+      const movies = [
+        {
+          id: 1,
+          title: 'Movie 1',
+        },
+      ];
+      const dto = { title: 'Movie 1' } as GetMoviesDto;
+
+      getMoviesMock.mockResolvedValue(qb);
+      applyCursorPaginationParamsToQbMock.mockResolvedValue({
+        nextCursor: null,
+      } as any);
+      qb.getManyAndCount.mockResolvedValue([movies, 1]);
+
+      const result = await movieService.getManyMovies(dto);
+
+      expect(getMoviesMock).toHaveBeenCalled();
+      expect(qb.where).toHaveBeenCalledWith('movie.title LIKE :title', {
+        title: `%${dto.title}%`,
+      });
+      expect(
+        commonService.applyCursorPaginationParamsToQb,
+      ).toHaveBeenCalledWith(qb, dto);
+      // expect(qb.getManyAndCount).toHaveBeenCalled();
+      expect(result).toEqual({
+        data: movies,
+        nextCursor: null,
+        count: 1,
+      });
+    });
+
+    it('should return a list of movies with user likes', async () => {
+      const movies = [
+        { id: 1, title: 'Movie 1' },
+        { id: 3, title: 'Movie 3' },
+      ];
+      const likesMovies = [
+        { movie: { id: 1 }, isLike: true },
+        { movie: { id: 3 }, isLike: false },
+      ];
+
+      const dto = { title: 'Movie' } as GetMoviesDto;
+
+      getMoviesMock.mockResolvedValue(qb);
+      applyCursorPaginationParamsToQbMock.mockResolvedValue({
+        nextCursor: null,
+      });
+      getLikedMoviesMock.mockResolvedValue(likesMovies);
+      qb.getManyAndCount.mockResolvedValue([movies, 2]);
+
+      const userId = 1;
+
+      const result = await movieService.getManyMovies(dto, userId);
+
+      expect(getMoviesMock).toHaveBeenCalled();
+      expect(qb.where).toHaveBeenCalledWith('movie.title LIKE :title', {
+        title: `%${dto.title}%`,
+      });
+      expect(applyCursorPaginationParamsToQbMock).toHaveBeenCalledWith(qb, dto);
+      expect(qb.getManyAndCount).toHaveBeenCalled();
+      expect(getLikedMoviesMock).toHaveBeenCalledWith(
+        movies.map((movie) => movie.id),
+        userId,
+      );
+      expect(result).toEqual({
+        data: [
+          {
+            id: 1,
+            title: 'Movie 1',
+            likeStatus: true,
+          },
+          {
+            id: 3,
+            title: 'Movie 3',
+            likeStatus: false,
+          },
+        ],
+        nextCursor: null,
+        count: 2,
+      });
+    });
+
+    it('should return movies without title filter', async () => {
+      const movies = [{ id: 1, title: 'Movie 1' }];
+      const dto = {} as GetMoviesDto;
+
+      getMoviesMock.mockResolvedValue(qb);
+      applyCursorPaginationParamsToQbMock.mockResolvedValue({
+        nextCursor: null,
+      });
+      qb.getManyAndCount.mockResolvedValue([movies, 1]);
+
+      const result = await movieService.getManyMovies(dto);
+
+      expect(getMoviesMock).toHaveBeenCalled();
+      expect(applyCursorPaginationParamsToQbMock).toHaveBeenCalledWith(qb, dto);
+      expect(qb.getManyAndCount).toHaveBeenCalled();
+      expect(result).toEqual({
+        data: movies,
+        nextCursor: null,
+        count: 1,
+      });
+    });
   });
 });
