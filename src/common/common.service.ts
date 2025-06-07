@@ -38,6 +38,13 @@ export class CommonService {
        *  order:
        *      ["likeCount_DESC", "id_DESC"]
        * }
+       * -----------------
+       * {  "value":
+       *         {"id":4}
+       * ,
+       *    "order":
+       *         ["id_DESC"]
+       * }
        */
 
       order = cursorObj.order;

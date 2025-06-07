@@ -20,7 +20,10 @@ export class CursorPaginationDto {
     example: ['id_DESC'],
   })
   @Transform(({ value }) => {
-    Array.isArray(value ? value : [value]);
+    // Array.isArray(value ? value : [value]);
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'string') return [value];
+    return [];
   })
   // [id_ASC, likeCount_DESC]
   order: string[] = ['id_DESC'];

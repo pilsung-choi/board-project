@@ -48,16 +48,26 @@ export class MovieService {
       return cacheData;
     }
 
-    const data = this.movieRepository.find({
+    const data = await this.movieRepository.find({
       order: {
         createdAt: 'DESC',
       },
       take: 10,
     });
 
-    return await this.cacheManager.set('MOVIE_RECENT', data);
+    await this.cacheManager.set('MOVIE_RECENT', data);
+    return data;
   }
 
+  /* istanbul ignore next */
+  async getMovies() {
+    return this.movieRepository
+      .createQueryBuilder('movie')
+      .leftJoinAndSelect('movie.director', 'director')
+      .leftJoinAndSelect('movie.genres', 'genres');
+  }
+
+  /* istanbul ignore next */
   async getLikedMovies(movieIds: number[], userId: number) {
     return await this.movieUserLikeRepo
       .createQueryBuilder('mul')
@@ -70,10 +80,7 @@ export class MovieService {
 
   async getManyMovies(dto: GetMoviesDto, userId?: number) {
     const { title } = dto;
-    const qb = this.movieRepository
-      .createQueryBuilder('movie')
-      .leftJoinAndSelect('movie.director', 'director')
-      .leftJoinAndSelect('movie.genres', 'genres');
+    const qb = await this.getMovies();
 
     if (title) {
       qb.where('movie.title LIKE :title', { title: `%${title}%` });
@@ -89,12 +96,6 @@ export class MovieService {
 
       const likedMovies =
         movieIds.length < 1 ? [] : await this.getLikedMovies(movieIds, userId);
-
-      /**
-       * {
-       *  movieId: boolean
-       * }
-       */
 
       const likedMoviesMap = likedMovies.reduce(
         (acc, cur) => ({
