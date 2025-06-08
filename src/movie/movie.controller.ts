@@ -91,7 +91,7 @@ export class MovieController {
     @UserId() userId: number,
     @QueryRunner() queryRunner: QR,
   ) {
-    return this.movieService.createMovie(body, userId, queryRunner);
+    return this.movieService.create(body, userId, queryRunner);
   }
 
   @Patch(':id')
@@ -100,13 +100,13 @@ export class MovieController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateMovieDto,
   ) {
-    return this.movieService.updateMovie(+id, body);
+    return this.movieService.update(+id, body);
   }
 
   @Delete(':id')
   @RBAC(Role.admin)
-  deleteMovie(@Param('id', ParseIntPipe) id: string) {
-    return this.movieService.deleteMovie(+id);
+  deleteMovie(@Param('id', ParseIntPipe) id: number) {
+    return this.movieService.remove(+id);
   }
 
   /**
