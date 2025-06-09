@@ -66,6 +66,9 @@ import * as winston from 'winston';
         entities: [Movie, MovieDetail, Director, Genre, User, MovieUserLike],
         synchronize: true, // 개발할때만 true, 프로덕션은 false
         //logging: ['query'],
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
       inject: [ConfigService],
     }),
