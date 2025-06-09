@@ -14,10 +14,10 @@ import { MovieDetail } from './movie/entity/movie-detail.entity';
 import { DirectorModule } from './director/director.module';
 import { Director } from './director/entity/director.entity';
 import { GenreModule } from './genre/genre.module';
-import { Genre } from './genre/entities/genre.entity';
+import { Genre } from './genre/entity/genre.entity';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { User } from './user/entities/user.entity';
+import { User } from './user/entity/user.entity';
 import { envVariableKeys } from './common/const/env.const';
 import { env } from 'process';
 import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
@@ -64,11 +64,16 @@ import * as winston from 'winston';
         password: configService.get<string>(envVariableKeys.dbPassword),
         database: configService.get<string>(envVariableKeys.dbDatabase),
         entities: [Movie, MovieDetail, Director, Genre, User, MovieUserLike],
-        synchronize: true, // 개발할때만 true, 프로덕션은 false
+        synchronize:
+          configService.get<string>(envVariableKeys.env) === 'prod'
+            ? false
+            : true, // 개발할때만 true, 프로덕션은 false
         //logging: ['query'],
-        ssl: {
-          rejectUnauthorized: false,
-        },
+        ...(configService.get<string>(envVariableKeys.env) === 'prod' && {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        }),
       }),
       inject: [ConfigService],
     }),
