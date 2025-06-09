@@ -17,7 +17,7 @@ describe('MovieController', () => {
     movieService = unitRef.get<MovieService>(MovieService);
   });
 
-  it('should be defined', () => {
+  it('should be defiend', () => {
     expect(movieController).toBeDefined();
   });
 
