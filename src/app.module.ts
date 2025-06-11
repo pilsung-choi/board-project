@@ -73,12 +73,11 @@ import * as winston from 'winston';
             ? false
             : true, // 개발할때만 true, 프로덕션은 false
         //logging: ['query'],
-        ...(configService.get<string>(envVariableKeys.env) === 'prod' &&
-          {
-            // ssl: {
-            //   rejectUnauthorized: false,
-            // },
-          }),
+        ...(configService.get<string>(envVariableKeys.env) === 'prod' && {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        }),
       }),
       inject: [ConfigService],
     }),
