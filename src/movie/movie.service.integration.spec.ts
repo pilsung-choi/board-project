@@ -13,6 +13,7 @@ import { DataSource } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
+import { ConfigModule } from '@nestjs/config';
 
 describe('MovieService - Integration Test', () => {
   let service: MovieService;
@@ -44,6 +45,7 @@ describe('MovieService - Integration Test', () => {
           User,
           MovieUserLike,
         ]),
+        ConfigModule.forRoot(),
       ],
       providers: [MovieService, CommonService],
     }).compile();
