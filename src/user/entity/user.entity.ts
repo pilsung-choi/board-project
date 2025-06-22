@@ -35,5 +35,5 @@ export class User extends BaseTable {
   createdMovies: Movie[];
 
   @OneToMany(() => MovieUserLike, (mul) => mul.user)
-  likedMovies: Movie[];
+  likedMovies: MovieUserLike[];
 }
