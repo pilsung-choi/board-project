@@ -9,6 +9,7 @@ import { TasksService } from './taskes.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Movie } from 'src/movie/entity/movie.entity';
 import { DefaultLogger } from './logger/default.logger';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -28,6 +29,17 @@ import { DefaultLogger } from './logger/default.logger';
         },
       }),
     }),
+    // BullModule.forRoot({
+    //   connection: {
+    //     host: 'redis-15241.c340.ap-northeast-2-1.ec2.redns.redis-cloud.com',
+    //     port: 15241,
+    //     username: 'default',
+    //     password: ,
+    //   },
+    // }),
+    // BullModule.registerQueue({
+    //   name: 'thumbnail-generation',
+    // }),
   ],
   controllers: [CommonController],
   providers: [CommonService, TasksService, DefaultLogger],
