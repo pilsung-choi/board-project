@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { envVariableKeys } from 'src/common/const/env.const';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from 'src/common/prisma.service';
 
 @Injectable()
 export class UserService {
@@ -18,16 +19,23 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
 
-    const user = await this.userRepository.findOne({
+    const user = await this.prisma.user.findUnique({
       where: {
         email,
       },
     });
+
+    // const user = await this.userRepository.findOne({
+    //   where: {
+    //     email,
+    //   },
+    // });
 
     if (user) {
       throw new BadRequestException('이미 가입한 유저입니다.');
