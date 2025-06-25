@@ -16,8 +16,8 @@ import { PrismaService } from 'src/common/prisma.service';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    // @InjectRepository(User)
+    // private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
   ) {}
@@ -31,6 +31,7 @@ export class UserService {
       },
     });
 
+    /** typeORM */
     // const user = await this.userRepository.findOne({
     //   where: {
     //     email,
@@ -46,24 +47,42 @@ export class UserService {
       this.configService.get<number>(envVariableKeys.hasRounds),
     );
 
-    await this.userRepository.save({
-      email,
-      password: hash,
+    await this.prisma.user.create({
+      data: {
+        email,
+        password: hash,
+      },
     });
 
-    return this.userRepository.findOne({
+    /** typeORM */
+    // await this.userRepository.save({
+    //   email,
+    //   password: hash,
+    // });
+
+    return this.prisma.user.findUnique({
       where: {
         email,
       },
     });
+
+    /** typeORM */
+    // return this.userRepository.findOne({
+    //   where: {
+    //     email,
+    //   },
+    // });
   }
 
   findAll() {
-    return this.userRepository.find();
+    return this.prisma.user.findMany();
+    /** typeORM */
+    // return this.userRepository.find();
   }
 
   async findOne(id: number) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    // const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
       throw new NotFoundException('존재하지 않은 사용자 입니다.');
@@ -74,7 +93,8 @@ export class UserService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     const { password } = updateUserDto;
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    // const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
       throw new NotFoundException('존재하지 않은 사용자 입니다.');
@@ -85,22 +105,35 @@ export class UserService {
       this.configService.get<number>(envVariableKeys.hasRounds),
     );
 
-    await this.userRepository.update(id, {
-      ...updateUserDto,
-      password: hash,
+    await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        ...updateUserDto,
+        password: hash,
+      },
     });
 
-    return this.userRepository.findOne({ where: { id } });
+    // await this.userRepository.update(id, {
+    //   ...updateUserDto,
+    //   password: hash,
+    // });
+
+    return this.prisma.user.findUnique({ where: { id } });
+    // return this.userRepository.findOne({ where: { id } });
   }
 
   async remove(id: number) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    // const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
       throw new NotFoundException('존재하지 않은 사용자 입니다.');
     }
 
-    await this.userRepository.delete(id);
+    await this.prisma.user.delete({ where: { id } });
+    //await this.userRepository.delete(id);
 
     return id;
   }

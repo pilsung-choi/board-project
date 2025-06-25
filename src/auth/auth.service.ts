@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role, User } from 'src/user/entity/user.entity';
 import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
@@ -13,12 +12,15 @@ import { JwtService } from '@nestjs/jwt';
 import { envVariableKeys } from 'src/common/const/env.const';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { UserService } from 'src/user/user.service';
+import { PrismaService } from 'src/common/prisma.service';
+import { PrismaClient, Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepo: Repository<User>,
+    // @InjectRepository(User)
+    // private readonly userRepo: Repository<User>,
+    private readonly prisma: PrismaService,
     private readonly userService: UserService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
@@ -144,11 +146,17 @@ export class AuthService {
   async login(rawToken: string) {
     const { email, password } = this.parseBasicToken(rawToken);
 
-    const user = await this.userRepo.findOne({
+    const user = await this.prisma.user.findUnique({
       where: {
         email,
       },
     });
+
+    // const user = await this.userRepo.findOne({
+    //   where: {
+    //     email,
+    //   },
+    // });
 
     if (!user) {
       throw new BadRequestException('잘못된 로그인 정보입니다.');
