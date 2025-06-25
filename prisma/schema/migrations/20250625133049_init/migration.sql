@@ -5,7 +5,7 @@ CREATE TYPE "Role" AS ENUM ('admin', 'paidUser', 'user');
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
-    "password" TEXT,
+    "password" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'user',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -14,22 +14,25 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Movie" (
     "id" SERIAL NOT NULL,
+    "creatorId" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
     "likeCount" INTEGER NOT NULL DEFAULT 0,
     "dislikeCount" INTEGER NOT NULL DEFAULT 0,
-    "movieFilePath" TEXT NOT NULL,
-    "creatorId" INTEGER NOT NULL,
     "detailId" INTEGER NOT NULL,
+    "movieFilePath" TEXT NOT NULL,
     "directorId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "version" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Movie_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "MovieUserLike" (
-    "isLike" BOOLEAN NOT NULL,
     "movieId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
+    "isLike" BOOLEAN NOT NULL,
 
     CONSTRAINT "MovieUserLike_pkey" PRIMARY KEY ("movieId","userId")
 );
@@ -45,9 +48,9 @@ CREATE TABLE "MovieDetail" (
 -- CreateTable
 CREATE TABLE "Chat" (
     "id" SERIAL NOT NULL,
-    "message" TEXT NOT NULL,
     "authorId" INTEGER NOT NULL,
-    "ChatRoomId" INTEGER NOT NULL,
+    "message" TEXT NOT NULL,
+    "chatRoomId" INTEGER NOT NULL,
 
     CONSTRAINT "Chat_pkey" PRIMARY KEY ("id")
 );
@@ -130,7 +133,7 @@ ALTER TABLE "MovieUserLike" ADD CONSTRAINT "MovieUserLike_userId_fkey" FOREIGN K
 ALTER TABLE "Chat" ADD CONSTRAINT "Chat_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Chat" ADD CONSTRAINT "Chat_ChatRoomId_fkey" FOREIGN KEY ("ChatRoomId") REFERENCES "ChatRoom"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Chat" ADD CONSTRAINT "Chat_chatRoomId_fkey" FOREIGN KEY ("chatRoomId") REFERENCES "ChatRoom"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ChatRoomToUser" ADD CONSTRAINT "_ChatRoomToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "ChatRoom"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -13,7 +13,7 @@ import { envVariableKeys } from 'src/common/const/env.const';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { UserService } from 'src/user/user.service';
 import { PrismaService } from 'src/common/prisma.service';
-import { PrismaClient, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
