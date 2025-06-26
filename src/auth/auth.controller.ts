@@ -1,7 +1,6 @@
 import { Controller, Post, Headers, Request, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
-import { retryWhen } from 'rxjs';
 import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
 import { Authrization } from './decorator/authrization.decorator';
 
@@ -26,6 +25,7 @@ export class AuthController {
   @Post('login')
   @ApiBasicAuth()
   loginUser(@Authrization() token: string) {
+    console.log(token);
     // Call the AuthService to login the user
     return this.authService.login(token);
   }

@@ -150,6 +150,11 @@ export class AuthService {
       where: {
         email,
       },
+      select: {
+        id: true,
+        password: true,
+        role: true,
+      },
     });
 
     // const user = await this.userRepo.findOne({
