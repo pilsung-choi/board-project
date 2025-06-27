@@ -25,7 +25,6 @@ export class AuthController {
   @Post('login')
   @ApiBasicAuth()
   loginUser(@Authrization() token: string) {
-    console.log(token);
     // Call the AuthService to login the user
     return this.authService.login(token);
   }

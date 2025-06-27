@@ -14,6 +14,7 @@ import { WsTransactionInterceptor } from 'src/common/interceptor/ws-transaction.
 import { WsQueryRunner } from 'src/common/decorator/ws-query-runner.decorator';
 import { QueryRunner } from 'typeorm';
 import { CreateChatDto } from './dto/create-chat.dto';
+import { cli } from 'winston/lib/winston/config';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -32,6 +33,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(client: Socket) {
     try {
       const rawToken = client.handshake.headers.authorization;
+      const address = client.handshake.address;
+      const auth = client.handshake.auth;
+
+      console.log('address:', address, 'auth:', auth);
 
       const payload = await this.authService.parseBearerToken(rawToken, false);
 
