@@ -6,7 +6,7 @@ const dbUserName = 'DB_USERNAME';
 const dbPassword = 'DB_PASSWORD';
 const dbDatabase = 'DB_DATABASE';
 const dbUrl = 'DB_URL';
-const hasRounds = 'HASH_ROUNDS';
+const hashRounds = 'HASH_ROUNDS';
 const accessTokenSecret = 'ACCESS_TOKEN_SECRET';
 const refreshTokenSecret = 'REFRESH_TOKEN_SECRET';
 const awsSecretAccessKey = 'AWS_SECRET_ACCESS_KEY';
@@ -23,7 +23,7 @@ export const envVariableKeys = {
   dbPassword,
   dbDatabase,
   dbUrl,
-  hasRounds,
+  hashRounds,
   accessTokenSecret,
   refreshTokenSecret,
   awsSecretAccessKey,

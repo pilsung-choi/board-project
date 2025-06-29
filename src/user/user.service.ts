@@ -45,7 +45,7 @@ export class UserService {
 
     const hash = await bcrypt.hash(
       password,
-      this.configService.get<number>(envVariableKeys.hasRounds),
+      this.configService.get<number>(envVariableKeys.hashRounds),
     );
 
     await this.prisma.user.create({
@@ -108,7 +108,7 @@ export class UserService {
     if (password) {
       const hash = await bcrypt.hash(
         password,
-        this.configService.get<number>(envVariableKeys.hasRounds),
+        this.configService.get<number>(envVariableKeys.hashRounds),
       );
 
       input = {
